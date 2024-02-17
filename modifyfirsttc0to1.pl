@@ -5,10 +5,13 @@
 foreach $inf (@ARGV)
 {
 
+  $deleteme = 'YES';
+  $nummods  = 0;
+
 
   $outf = "fixed-tc/$inf";
   #$outf =~ s/.scc/_ENG.scc/;
-  print("$inf -> $outf\n");
+  #print("$inf -> $outf\n");
 
 
   unless (open INF, "<$inf")
@@ -33,6 +36,8 @@ foreach $inf (@ARGV)
     {
       #$txt =~ s/^00:/01:/;
       $txt = "01:00:00${1}00$'";
+      $deleteme = 'NO';
+      $nummods += 1;
     }
 
     print OUTF ("$txt\n");
@@ -40,5 +45,17 @@ foreach $inf (@ARGV)
 
   close(INF);
   close(OUTF);
+
+  if ($deleteme eq 'YES')
+  {
+    #delete the out file since nothing was done
+    $delcmd = "rm fixed-tc/$inf";
+    #print("No changes : $delcmd\n");
+    `$delcmd`;
+  }
+  else
+  {
+    print("$inf : $nummods changes made\n");
+  }
 
 }
